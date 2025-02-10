@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!-- Importa a biblioteca Phaser -->
+	<script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+	<title>Exercício do Pássaro</title>
+	<style>
+		/* Estiliza o corpo da página para centralizar o conteúdo */
+		body {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<script>
+// Configuração do jogo Phaser
+var config = {
+    type: Phaser.AUTO, // Tipo de renderização (automático)
+    width: 800, // Largura do jogo
+    height: 600, // Altura do jogo
+    scene: {
+        preload: preload, // Função de pré-carregamento
+        create: create, // Função de criação
+        update: update // Função de atualização
+    }
+};
+
+// Cria uma nova instância do jogo Phaser com a configuração especificada
+var game = new Phaser.Game(config);
+
+var passarinho; // Variável para armazenar o sprite do passarinho
+
+// Função de pré-carregamento para carregar os assets do jogo
+function preload() {
+    this.load.image('bg', 'assets/bg_space.png'); // Carrega a imagem de fundo
+    this.load.spritesheet('bird', 'assets/bird-red.png', { frameWidth: 75, frameHeight: 75 }); // Carrega o spritesheet do passarinho
+}
+
+// Função de criação para inicializar os objetos do jogo
+function create() {
+    this.add.image(400, 300, 'bg').setScale(1.2); // Adiciona a imagem de fundo e ajusta a escala
+    passarinho = this.add.sprite(100, 300, 'bird').setScale(1.3); // Adiciona o sprite do passarinho e ajusta a escala
+
+    // Cria a animação de voo do passarinho
+    this.anims.create({
+        key: 'fly', // Nome da animação
+        frames: this.anims.generateFrameNumbers('bird', { start: 0, end: 7 }), // Frames da animação
+        frameRate: 10, // Taxa de quadros por segundo
+        repeat: -1 // Repetição infinita
+    });
+
+    // Inicia a animação de voo do passarinho
+    passarinho.anims.play('fly', true);
+
+    // Variáveis de controle de movimento
+    passarinho.ida = true;
+    passarinho.subindo = true;
+}
+
+// Função de atualização para atualizar o estado do jogo a cada frame
+function update() {
+    // Loop para o movimento horizontal
+    for (let i = 0; i < 3; i++) { 
+        if (passarinho.ida) {
+            passarinho.x += 1; 
+        } else {
+            passarinho.x -= 1;
+        }
+    }
+
+    // Troca de direção horizontal ao atingir os limites
+    if (passarinho.x >= 780) {
+        passarinho.setFlip(true, false);
+        passarinho.ida = false;
+    } else if (passarinho.x <= 50) {
+        passarinho.setFlip(false, false);
+        passarinho.ida = true;
+    }
+
+    // Loop para o movimento vertical
+    let contador = 0;
+    while (contador < 1) {  
+        if (passarinho.subindo) {
+            passarinho.y -= 1;
+        } else {
+            passarinho.y += 1;
+        }
+        contador++;
+    }
+
+    // Troca de direção vertical ao atingir os limites
+    if (passarinho.y <= 20) {
+        passarinho.subindo = false;
+    } else if (passarinho.y >= 580) {
+        passarinho.subindo = true;
+    }
+}
+
+</script>
+
+</body>
+</html>
